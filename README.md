@@ -2,7 +2,7 @@
 
 Paywatch is a robust SaaS-ready platform designed for tracking user subscriptions, automating email reminders, and monitoring system security in real-time. It features a scalable Node.js backend with advanced security layers and a modern React-based Admin Dashboard for analytics.
 
-![Paywatch Dashboard](./security-dashboard/public/paywatch-logo.svg)
+![Paywatch Dashboard](./security-dashboard/assests/logo2.svg)
 
 ---
 
