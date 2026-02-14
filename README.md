@@ -1,92 +1,180 @@
-# Sub-Dub (Subscription Tracker)
+# Paywatch — Subscription Management & Security Platform
 
-A comprehensive backend API for managing subscriptions and sending intelligent, automated email reminders. Built with Node.js, Express, MongoDB, and powered by **Upstash Workflow** for reliable scheduling.
+Paywatch is a robust SaaS-ready platform designed for tracking user subscriptions, automating email reminders, and monitoring system security in real-time. It features a scalable Node.js backend with advanced security layers and a modern React-based Admin Dashboard for analytics.
+
+![Paywatch Dashboard](./security-dashboard/public/paywatch-logo.svg)
+
+---
 
 ## 🚀 Features
 
--   **User Authentication**: Secure JWT-based signup and login.
--   **Subscription Management**: CRUD operations for user subscriptions.
--   **Automated Reminders**: Intelligent email notifications sent before subscription renewals.
--   **Smart Scheduling**: Uses **Upstash Workflow** to handle reminders without traditional cron jobs.
--   **Security**: Integrated **Arcjet** for rate limiting and bot protection.
--   **Email Integration**: Automated email dispatch using Nodemailer.
+### 🛡️ Security & Infrastructure
+-   **Advanced WAF (Web Application Firewall)**: Protects against SQL Injection, XSS, and command injection attacks.
+-   **Bot Detection**: Identifies and blocks malicious crawlers and scrapers.
+-   **Rate Limiting**: Prevents DDoS and brute-force attacks.
+-   **IP Banning**: Automatically bans suspicious IP addresses.
+-   **Unified Activity Logging**: Centralized event stream for users, subscriptions, security, and workflows.
 
-## ⚡ The Workflow (Upstash Integration)
+### 📊 Admin Dashboard
+-   **Real-Time Analytics**: Live monitoring of total users, active subscriptions, and system load.
+-   **Security Intelligence**: Visualizations for attack frequency, top blocked IPs, and recent security events.
+-   **Interactive Charts**: Area, Bar, and Pie charts powered by Recharts.
+-   **Activity Feed**: Live feed of all system events (User signups, attacks blocked, emails sent).
 
-The project leverages **@upstash/workflow** to handle the complexity of scheduling reminders. Instead of checking the database every minute (polling), we schedule "long-running" workflows that sleep until they are needed.
+### 🔄 Subscription Management
+-   **CRUD Operations**: Full lifecycle management for user subscriptions.
+-   **Automated Reminders**: Intelligent email notifications sent 7, 5, 2, and 1 days before renewal.
+-   **Smart Scheduling**: Powered by **Upstash Workflow** for reliable, serverless task scheduling.
 
-### How it works:
-1.  **Trigger**: When a user creates a subscription (`subscription.controller.js`), a new workflow run is triggered immediately.
-2.  **Logic Execution**: The workflow endpoint (`/api/v1/workflows/subscription/reminder`) receives the event.
-3.  **Sleep & Wake**:
-    -   The workflow calculates the renewal date.
-    -   It iterates through a defined schedule: **7 days, 5 days, 2 days, and 1 day** before renewal.
-    -   For each milestone, the workflow uses `context.sleepUntil` to suspend execution until that exact moment.
-4.  **Action**: When the time arrives, the workflow "wakes up", verifies the subscription is still active, and sends the reminder email.
+---
 
-## 🛠️ Setup & Installation
+## 🛠️ Tech Stack
 
+### Backend
+-   **Runtime**: Node.js, Express.js
+-   **Database**: MongoDB (Mongoose), Aggregation Pipelines.
+-   **Security**: Custom WAF, Rate Limiting, Bot Detection.
+-   **Automation**: Upstash Workflow (QStash).
+-   **Auth**: JWT (JSON Web Tokens), Bcrypt.js.
+-   **Email**: Nodemailer.
+
+### Frontend (Admin Dashboard)
+-   **Framework**: React 19, Vite.
+-   **Styling**: Tailwind CSS.
+-   **State/Data**: Axios, React Hooks.
+-   **Visualization**: Recharts.
+-   **Icons**: Lucide React.
+-   **Animations**: Framer Motion.
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1. Prerequisites
+-   Node.js (v18+)
+-   MongoDB Atlas URI or local instance
+-   Upstash Account (for Workflow/QStash)
+
+### 2. Backend Setup
 1.  **Clone the repository**
     ```bash
     git clone <repository-url>
     cd Subscription-tracker
     ```
 
-2.  **Install Dependencies**
+2.  **Install Backend Dependencies**
     ```bash
     npm install
     ```
 
-3.  **Environment Variables**
-    Create a `.env.development.local` file in the root directory with the following variables:
+3.  **Configure Environment Variables**
+    Create a `.env.development.local` file in the root directory:
     ```env
+    # Server Configuration
     PORT=5500
     SERVER_URL="http://localhost:5500"
     NODE_ENV=development
 
     # Database
-    DB_URI=<your_mongodb_uri>
+    DB_URI=<your_mongodb_connection_string>
 
-    # JWT Auth
-    JWT_SECRET=<your_secret>
+    # Authentication
+    JWT_SECRET=<your_jwt_secret>
     JWT_EXPIRES_IN="1d"
 
-    # Upstash (Workflow)
-    QSTASH_URL=http://127.0.0.1:8080
-    QSTASH_TOKEN=<your_token>
+    # Upstash (Workflow Automation)
+    QSTASH_URL=<your_qstash_url>
+    QSTASH_TOKEN=<your_qstash_token>
 
-    # Arcjet (Security)
-    ARCJET_KEY=<your_arcjet_key>
-    ARCJET_ENV=development
-
-    # Nodemailer
-    Email_user=<your_email>
-    Email_pass=<your_email_password>
+    # Email Service (Nodemailer)
+    Email_user=<your_email_address>
+    Email_pass=<your_email_app_password>
     ```
 
-4.  **Run the local QStash server** (for workflow testing)
-    ```bash
-    npx @upstash/qstash-cli dev
-    ```
-
-5.  **Start the Application**
+4.  **Start the Backend**
     ```bash
     npm run dev
     ```
+    The API will run at `http://localhost:5500`.
+
+### 3. Frontend Dashboard Setup
+1.  **Navigate to the dashboard directory**
+    ```bash
+    cd security-dashboard
+    ```
+
+2.  **Install Frontend Dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Start the Dashboard**
+    ```bash
+    npm run dev
+    ```
+    The dashboard will launch at `http://localhost:5173`.
+
+---
 
 ## 📂 Project Structure
 
--   `controllers/`: Logic for Users, Subscriptions, and Workflows.
--   `routes/`: API route definitions.
--   `models/`: Mongoose schemas.
--   `middlewares/`: Auth and Error handling.
--   `config/`: Configuration for third-party services (Upstash, Arcjet, Nodemailer).
--   `utils/`: Helper functions (Email sending, templates).
+```
+Paywatch/
+├── config/                 # Environment & 3rd party configs (Upstash, etc.)
+├── controllers/            # Logic for Auth, Users, Subscriptions, Workflows
+├── middlewares/            # Custom Middleware
+│   ├── security/           # WAF, Bot Detector, Rate Limiter, IP Ban
+│   ├── auth.middleware.js  # JWT Verification
+│   └── error.middleware.js # Global Error Handler
+├── models/                 # Mongoose Schemas (User, Subscription, Activity, SecurityLog)
+├── routes/                 # API Routes (Auth, Admin, Security, Workflows)
+├── utils/                  # Helper functions (Email templates, etc.)
+├── security-dashboard/     # React Admin Dashboard
+│   ├── src/
+│   │   ├── api/            # API Integration Layer
+│   │   ├── components/     # Reusable UI Components & Charts
+│   │   ├── layout/         # Sidebar & Main Layout
+│   │   ├── pages/          # Overview, Users, Subscriptions, Security Pages
+│   │   └── assets/         # Static Assets & Logos
+│   └── ...
+├── app.js                  # Express App Entry Point
+└── package.json            # Backend Dependencies
+```
 
-## 🔗 API Endpoints
+---
 
--   `POST /api/v1/auth/sign-up`
--   `POST /api/v1/auth/sign-in`
--   `GET /api/v1/subscriptions`
--   `POST /api/v1/subscriptions`
--   `GET /api/v1/users`
+## 🔗 Key API Endpoints
+
+### 🔐 Auth & Users
+-   `POST /api/v1/auth/sign-up` - Register new user
+-   `POST /api/v1/auth/sign-in` - Login
+-   `GET /api/v1/users` - Get all users
+
+### 💳 Subscriptions
+-   `GET /api/v1/subscriptions` - List all subscriptions
+-   `POST /api/v1/subscriptions` - Create subscription (Triggers workflow)
+-   `GET /api/v1/subscriptions/user/:id` - Get user specific subscriptions
+
+### 🛡️ Admin & Security
+-   `GET /api/v1/admin/users/stats` - User growth stats
+-   `GET /api/v1/admin/security/stats` - Security block stats
+-   `GET /api/v1/admin/activity` - Global activity feed
+-   `GET /api/v1/security/logs` - Recent security logs
+-   `POST /api/v1/workflows/subscription/reminder` - Trigger reminder workflow
+
+---
+
+## 🛡️ Security Features Testing
+To test the security features, try running these commands:
+
+**Test Bot Detection:**
+```bash
+curl -H "User-Agent: python-requests" http://localhost:5500/api/v1/users
+```
+
+**Test WAF (SQL Injection):**
+```bash
+curl "http://localhost:5500/api/v1/users?id=1 UNION SELECT * FROM users"
+```
+
+Check the **Security Dashboard** to see these attacks blocked in real-time!

@@ -1,46 +1,47 @@
 import dayjs from "dayjs";
 import Subscription from "../models/subscription.model.js";
+import Activity from "../models/Activity.js";
 import { createRequire } from "module";
 import { sendReminderEmail } from "../utils/send-email.js";
 
-const REMINDERS = [7, 5 ,2, 1];
+const REMINDERS = [7, 5, 2, 1];
 
 const require = createRequire(import.meta.url);
 
 const { serve } = require("@upstash/workflow/express");
 
-export const sendReminders = serve(async(context) => {
+export const sendReminders = serve(async (context) => {
     const { subscriptionId } = context.requestPayload;
     const subscription = await fetchSubscription(context, subscriptionId);
 
-    if(!subscription || subscription.status != 'active') return;
+    if (!subscription || subscription.status != 'active') return;
 
     const renewalDate = dayjs(subscription.renewalDate);
-    
 
-    if(renewalDate.isBefore(dayjs())) {
+
+    if (renewalDate.isBefore(dayjs())) {
         console.log(`Renewal date has passed for Subscription ${subscriptionId}.Stopping workflow.`);
         return;
-    }                   
+    }
 
-    for(const dayBefore of REMINDERS) {
+    for (const dayBefore of REMINDERS) {
         const reminderDate = renewalDate.subtract(dayBefore, 'day');
 
-        if(reminderDate.isAfter(dayjs())) {
-           await sleepUntilReminder(context, `${dayBefore} days before reminder`, reminderDate);
+        if (reminderDate.isAfter(dayjs())) {
+            await sleepUntilReminder(context, `${dayBefore} days before reminder`, reminderDate);
         }
 
         await triggerReminder(context, `${dayBefore} days before reminder`, subscription);
     }
 });
 
-const fetchSubscription = async(context, subscriptionId) => {
+const fetchSubscription = async (context, subscriptionId) => {
     return await context.run('get subscription', async () => {
         return Subscription.findById(subscriptionId).populate('user', 'name email');
     })
 }
 
-const sleepUntilReminder = async(context, label, date) => {
+const sleepUntilReminder = async (context, label, date) => {
     console.log(`Sleep until ${label} reminder at ${date}`);
     await context.sleepUntil(label, date.toDate());
 }
@@ -48,12 +49,21 @@ const sleepUntilReminder = async(context, label, date) => {
 const triggerReminder = async (context, label, subscription) => {
     return await context.run(label, async () => {
         console.log(`Triggering ${label} reminder`);
-        //Sms reminder 
 
         await sendReminderEmail({
             to: subscription.user.email,
             type: label,
             subscription,
         })
+
+        await Activity.create({
+            type: "workflow",
+            message: `Workflow executed: ${label} for "${subscription.name}"`,
+            meta: {
+                subscriptionId: subscription._id,
+                label,
+                userEmail: subscription.user.email,
+            },
+        });
     })
 }

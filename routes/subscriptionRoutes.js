@@ -1,16 +1,21 @@
 import { Router } from 'express';
 import authorize from '../middlewares/auth.middleware.js';
-import { createSubscription, getUserSubscriptions } from '../controllers/subscription.controller.js';
+import {
+    getAllSubscriptions,
+    getSubscription,
+    createSubscription,
+    getUserSubscriptions,
+} from '../controllers/subscription.controller.js';
 
 const subscriptionRouter = Router();
 
-subscriptionRouter.get('/', (req, res) => res.send({ title: 'GET all subscription' }));
+subscriptionRouter.get('/', getAllSubscriptions);
 
-subscriptionRouter.get('/:id', (req, res) => res.send({ title: 'GET subscription details' }));
+subscriptionRouter.get('/:id', getSubscription);
 
 subscriptionRouter.post('/', authorize, createSubscription);
 
-subscriptionRouter.put('/:id', (req, res) => res.send({ title: 'UPDATE subscription' })); // Fixed trailing space
+subscriptionRouter.put('/:id', (req, res) => res.send({ title: 'UPDATE subscription' }));
 
 subscriptionRouter.delete('/:id', (req, res) => res.send({ title: 'DELETE a subscription' }));
 

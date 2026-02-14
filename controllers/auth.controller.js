@@ -1,15 +1,13 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-
 import User from '../models/user.model.js';
+import Activity from '../models/Activity.js';
 import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/env.js'
 
 export const signUp = async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
 
-        // Check if a user already exists
         const existingUser = await User.findOne({ email });
 
         if (existingUser) {
@@ -18,11 +16,17 @@ export const signUp = async (req, res, next) => {
             throw error;
         }
 
-        // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = await User.create({ name, email, password: hashedPassword });
+
+
+        await Activity.create({
+            type: "user",
+            message: `New user registered: ${name} (${email})`,
+            meta: { userId: newUser._id, name, email },
+        });
 
         const token = jwt.sign({ userId: newUser._id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
