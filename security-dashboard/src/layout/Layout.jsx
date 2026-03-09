@@ -3,9 +3,9 @@ import Sidebar from "./Sidebar";
 
 export default function Layout() {
     return (
-        <div className="flex h-screen bg-slate-950 text-slate-100 overflow-hidden">
+        <div className="flex h-screen bg-gray-50 text-gray-900 overflow-hidden">
             <div className="fixed inset-0 z-0">
-                <div className="absolute top-0 left-0 w-full h-full bg-slate-950" />
+                <div className="absolute top-0 left-0 w-full h-full bg-gray-50" />
                 <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px]" />
                 <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px]" />
             </div>

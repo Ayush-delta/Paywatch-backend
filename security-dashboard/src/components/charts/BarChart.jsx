@@ -3,8 +3,8 @@ import { ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, C
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-slate-900 border border-slate-700/50 p-4 rounded-xl shadow-xl">
-                <p className="font-medium text-slate-200 mb-2">{label}</p>
+            <div className="bg-white border border-gray-300/50 p-4 rounded-xl shadow-xl">
+                <p className="font-medium text-gray-800 mb-2">{label}</p>
                 <p className="text-sm font-semibold text-indigo-400">
                     {payload[0].value}
                 </p>
@@ -18,23 +18,23 @@ export default function BarChart({ data, dataKey, color = "#818cf8" }) {
     return (
         <ResponsiveContainer width="100%" height={300}>
             <RechartsBarChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                 <XAxis
                     dataKey="name"
-                    stroke="#475569"
+                    stroke="#64748b"
                     tickLine={false}
                     axisLine={false}
                     tick={{ fontSize: 12 }}
                     dy={10}
                 />
                 <YAxis
-                    stroke="#475569"
+                    stroke="#64748b"
                     tickLine={false}
                     axisLine={false}
                     tick={{ fontSize: 12 }}
                     dx={-10}
                 />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: "#1e293b" }} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f1f5f9" }} />
                 <Bar
                     dataKey={dataKey}
                     fill={color}

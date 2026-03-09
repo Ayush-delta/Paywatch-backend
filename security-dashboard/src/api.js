@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = "http://localhost:5500/api/v1";
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -34,7 +34,7 @@ export const fetchUserSubscriptions = (userId) =>
 
 //  WORKFLOWS
 export const triggerReminder = () =>
-  api.post("/workflows/subscription/reminder");
+  api.post("/workflows/trigger");
 
 //  SECURITY
 export const fetchLogs = () => api.get("/security/logs");

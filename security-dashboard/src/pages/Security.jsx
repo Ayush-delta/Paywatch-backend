@@ -60,7 +60,7 @@ export default function Security() {
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
                         Security Intelligence
                     </h1>
-                    <p className="text-slate-400">Real-time threat monitoring and WAF analytics.</p>
+                    <p className="text-gray-500">Real-time threat monitoring and WAF analytics.</p>
                 </div>
                 <div className="flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-xs font-semibold animate-pulse">
                     <div className="w-2 h-2 rounded-full bg-red-500" />
@@ -138,7 +138,7 @@ export default function Security() {
                 </CardHeader>
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
-                        <thead className="bg-slate-900/50 text-slate-400 font-medium whitespace-nowrap">
+                        <thead className="bg-white text-gray-500 font-medium whitespace-nowrap">
                             <tr>
                                 <th className="px-6 py-3">Timestamp</th>
                                 <th className="px-6 py-3">Source IP</th>
@@ -147,28 +147,28 @@ export default function Security() {
                                 <th className="px-6 py-3">Reason</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-800">
+                        <tbody className="divide-y divide-gray-200">
                             {logs.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" className="p-8 text-center text-slate-500">
+                                    <td colSpan="5" className="p-8 text-center text-gray-400">
                                         No threats detected recently. System secure.
                                     </td>
                                 </tr>
                             ) : (
                                 logs.map((log) => (
-                                    <tr key={log._id} className="hover:bg-slate-800/30 transition-colors font-mono text-xs">
-                                        <td className="px-6 py-3 text-slate-400">
+                                    <tr key={log._id} className="hover:bg-gray-100/30 transition-colors font-mono text-xs">
+                                        <td className="px-6 py-3 text-gray-500">
                                             {new Date(log.createdAt).toLocaleTimeString()}
                                         </td>
                                         <td className="px-6 py-3 text-red-300">
                                             {log.ip}
                                         </td>
                                         <td className="px-6 py-3">
-                                            <span className={`px-2 py-0.5 rounded border ${methodColors[log.method] || "bg-slate-800 text-slate-400 border-slate-700"}`}>
+                                            <span className={`px-2 py-0.5 rounded border ${methodColors[log.method] || "bg-gray-100 text-gray-500 border-gray-300"}`}>
                                                 {log.method}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-3 text-slate-300 truncate max-w-[200px]">
+                                        <td className="px-6 py-3 text-gray-700 truncate max-w-[200px]">
                                             {log.path}
                                         </td>
                                         <td className="px-6 py-3 text-red-400">

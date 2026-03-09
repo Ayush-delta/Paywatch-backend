@@ -79,14 +79,14 @@ export default function Overview() {
     const StatsSkeleton = () => (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => (
-                <Card key={i} className="hover:border-slate-700">
+                <Card key={i} className="hover:border-gray-300">
                     <CardContent className="flex items-start justify-between p-6">
                         <div className="space-y-3 animate-pulse">
-                            <div className="h-3 w-24 bg-slate-700/60 rounded" />
-                            <div className="h-7 w-16 bg-slate-700/60 rounded" />
-                            <div className="h-2.5 w-20 bg-slate-700/40 rounded" />
+                            <div className="h-3 w-24 bg-gray-200/60 rounded" />
+                            <div className="h-7 w-16 bg-gray-200/60 rounded" />
+                            <div className="h-2.5 w-20 bg-gray-200/40 rounded" />
                         </div>
-                        <div className="w-12 h-12 rounded-xl bg-slate-700/40 animate-pulse" />
+                        <div className="w-12 h-12 rounded-xl bg-gray-200/40 animate-pulse" />
                     </CardContent>
                 </Card>
             ))}
@@ -96,10 +96,10 @@ export default function Overview() {
     return (
         <div className="space-y-6 fade-in">
             <div className="flex flex-col gap-2">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                     Dashboard Overview
                 </h1>
-                <p className="text-slate-400">Welcome back, Admin. Here's what's happening today.</p>
+                <p className="text-gray-500">Welcome back, Admin. Here's what's happening today.</p>
             </div>
 
             {/* Stats Row */}
@@ -190,7 +190,7 @@ export default function Overview() {
                                 color="#ef4444"
                             />
                         ) : (
-                            <div className="flex items-center justify-center h-[200px] text-slate-500 text-sm">
+                            <div className="flex items-center justify-center h-[200px] text-gray-400 text-sm">
                                 No blocked IPs recorded yet
                             </div>
                         )}

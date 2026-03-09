@@ -1,7 +1,7 @@
 import { cn } from "./Card";
 
 const variants = {
-    default: "bg-slate-800 text-slate-300 border-slate-700",
+    default: "bg-gray-100 text-gray-700 border-gray-300",
     success: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
     warning: "bg-amber-500/10 text-amber-400 border-amber-500/20",
     danger: "bg-red-500/10 text-red-400 border-red-500/20",

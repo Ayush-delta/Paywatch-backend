@@ -3,8 +3,8 @@ import { Loader2 } from "lucide-react";
 
 const variants = {
     primary: "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20",
-    secondary: "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700",
-    ghost: "bg-transparent hover:bg-slate-800 text-slate-400 hover:text-slate-200",
+    secondary: "bg-gray-100 hover:bg-gray-200 text-gray-800 border border-gray-300",
+    ghost: "bg-transparent hover:bg-gray-100 text-gray-500 hover:text-gray-800",
     danger: "bg-red-600 hover:bg-red-500 text-white shadow-lg shadow-red-500/20",
 };
 

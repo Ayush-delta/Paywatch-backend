@@ -9,7 +9,7 @@ export function Card({ className, children, ...props }) {
     return (
         <div
             className={cn(
-                "bg-slate-900/50 backdrop-blur-md border border-slate-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300",
+                "bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300",
                 className
             )}
             {...props}
@@ -21,7 +21,7 @@ export function Card({ className, children, ...props }) {
 
 export function CardHeader({ className, children, ...props }) {
     return (
-        <div className={cn("p-6 border-b border-slate-800/50", className)} {...props}>
+        <div className={cn("p-6 border-b border-gray-100", className)} {...props}>
             {children}
         </div>
     );
@@ -29,7 +29,7 @@ export function CardHeader({ className, children, ...props }) {
 
 export function CardTitle({ className, children, ...props }) {
     return (
-        <h3 className={cn("text-lg font-semibold text-slate-100", className)} {...props}>
+        <h3 className={cn("text-lg font-bold text-gray-900", className)} {...props}>
             {children}
         </h3>
     );

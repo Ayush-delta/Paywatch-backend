@@ -64,7 +64,7 @@ export default function Subscriptions() {
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">
                     Subscriptions & Revenue
                 </h1>
-                <p className="text-slate-400">Monitor recurring revenue and customer retention.</p>
+                <p className="text-gray-500">Monitor recurring revenue and customer retention.</p>
             </div>
 
             {/* Stats Row */}
@@ -109,15 +109,15 @@ export default function Subscriptions() {
 
             {/* Subscription List Table */}
             <Card>
-                <div className="p-4 border-b border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div className="flex gap-2 p-1 bg-slate-900 rounded-lg">
+                <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div className="flex gap-2 p-1 bg-white rounded-lg">
                         {["all", "active", "cancelled"].map((f) => (
                             <button
                                 key={f}
                                 onClick={() => setFilter(f)}
                                 className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${filter === f
-                                        ? "bg-slate-800 text-slate-100 shadow-sm"
-                                        : "text-slate-400 hover:text-slate-200"
+                                        ? "bg-gray-100 text-gray-900 shadow-sm"
+                                        : "text-gray-500 hover:text-gray-800"
                                     }`}
                             >
                                 {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -126,11 +126,11 @@ export default function Subscriptions() {
                     </div>
 
                     <div className="relative w-full sm:w-64">
-                        <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                        <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
                         <input
                             type="text"
                             placeholder="Search subscriptions..."
-                            className="pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:ring-2 focus:ring-emerald-500/50 outline-none w-full transition-all"
+                            className="pl-9 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-emerald-500/50 outline-none w-full transition-all"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
@@ -139,7 +139,7 @@ export default function Subscriptions() {
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
-                        <thead className="bg-slate-900/50 text-slate-400 font-medium whitespace-nowrap">
+                        <thead className="bg-white text-gray-500 font-medium whitespace-nowrap">
                             <tr>
                                 <th className="px-6 py-3">Subscription</th>
                                 <th className="px-6 py-3">Price</th>
@@ -148,23 +148,23 @@ export default function Subscriptions() {
                                 <th className="px-6 py-3">Renewal Date</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-800">
+                        <tbody className="divide-y divide-gray-200">
                             {filtered.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" className="p-8 text-center text-slate-500">
+                                    <td colSpan="5" className="p-8 text-center text-gray-400">
                                         No subscriptions found matching your filters.
                                     </td>
                                 </tr>
                             ) : (
                                 filtered.map((sub) => (
-                                    <tr key={sub._id} className="hover:bg-slate-800/50 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-slate-200 capitalize">
+                                    <tr key={sub._id} className="hover:bg-gray-100 transition-colors">
+                                        <td className="px-6 py-4 font-medium text-gray-800 capitalize">
                                             {sub.name}
                                         </td>
                                         <td className="px-6 py-4 font-mono text-emerald-400">
                                             {sub.currency} {sub.price.toFixed(2)}
                                         </td>
-                                        <td className="px-6 py-4 capitalize text-slate-400">
+                                        <td className="px-6 py-4 capitalize text-gray-500">
                                             {sub.frequency}
                                         </td>
                                         <td className="px-6 py-4">
@@ -172,7 +172,7 @@ export default function Subscriptions() {
                                                 {sub.status}
                                             </Badge>
                                         </td>
-                                        <td className="px-6 py-4 text-slate-400">
+                                        <td className="px-6 py-4 text-gray-500">
                                             {new Date(sub.renewalDate).toLocaleDateString()}
                                         </td>
                                     </tr>

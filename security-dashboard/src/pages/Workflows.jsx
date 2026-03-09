@@ -52,7 +52,7 @@ export default function Workflows() {
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent">
                         Workflows & Automation
                     </h1>
-                    <p className="text-slate-400">Manage background jobs and scheduled tasks.</p>
+                    <p className="text-gray-500">Manage background jobs and scheduled tasks.</p>
                 </div>
                 <Button
                     onClick={handleTrigger}
@@ -79,14 +79,14 @@ export default function Workflows() {
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {stats.map((stat, i) => (
-                    <Card key={i} className="hover:border-slate-700 transition-all">
+                    <Card key={i} className="hover:border-gray-300 transition-all">
                         <CardContent className="flex items-center gap-4 p-6">
                             <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
                                 <stat.icon size={24} />
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-slate-400">{stat.label}</p>
-                                <h3 className="text-2xl font-bold text-slate-100">{stat.value}</h3>
+                                <p className="text-sm font-medium text-gray-500">{stat.label}</p>
+                                <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
                             </div>
                         </CardContent>
                     </Card>
@@ -101,7 +101,7 @@ export default function Workflows() {
                     </CardHeader>
                     <div className="px-6 pb-6">
                         <table className="w-full text-sm text-left">
-                            <thead className="text-slate-400 font-medium border-b border-slate-800">
+                            <thead className="text-gray-500 font-medium border-b border-gray-200">
                                 <tr>
                                     <th className="py-3">Workflow</th>
                                     <th className="py-3">Status</th>
@@ -109,17 +109,17 @@ export default function Workflows() {
                                     <th className="py-3 text-right">Time</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-800">
+                            <tbody className="divide-y divide-gray-200">
                                 {recentRuns.map((run) => (
-                                    <tr key={run.id} className="hover:bg-slate-800/30 transition-colors">
-                                        <td className="py-3 font-medium text-slate-200">{run.name}</td>
+                                    <tr key={run.id} className="hover:bg-gray-100/30 transition-colors">
+                                        <td className="py-3 font-medium text-gray-800">{run.name}</td>
                                         <td className="py-3">
                                             <Badge variant={run.status === "success" ? "success" : "danger"}>
                                                 {run.status}
                                             </Badge>
                                         </td>
-                                        <td className="py-3 text-slate-400 font-mono">{run.duration}</td>
-                                        <td className="py-3 text-right text-slate-500">{run.time}</td>
+                                        <td className="py-3 text-gray-500 font-mono">{run.duration}</td>
+                                        <td className="py-3 text-right text-gray-400">{run.time}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -139,7 +139,7 @@ export default function Workflows() {
             </div>
 
             {/* Info Section */}
-            <Card className="bg-gradient-to-br from-slate-900 to-slate-900 border-indigo-500/20">
+            <Card className="bg-gradient-to-br from-indigo-50 to-white border-indigo-200">
                 <CardHeader>
                     <CardTitle className="text-indigo-400 flex items-center gap-2">
                         <Activity size={20} />
@@ -147,10 +147,10 @@ export default function Workflows() {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-slate-400 leading-relaxed">
+                    <p className="text-gray-500 leading-relaxed">
                         This dashboard connects to your Upstash QStash message queue.
                         When you click "Trigger Reminders", a message is published to the
-                        <code className="mx-1 px-1.5 py-0.5 rounded bg-slate-800 text-indigo-300 font-mono text-xs">/api/v1/workflows/subscription/reminder</code>
+                        <code className="mx-1 px-1.5 py-0.5 rounded bg-gray-100 text-indigo-300 font-mono text-xs">/api/v1/workflows/subscription/reminder</code>
                         endpoint, which initiates the renewal checks for all active subscriptions.
                     </p>
                 </CardContent>
