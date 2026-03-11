@@ -8,27 +8,27 @@ Paywatch is a robust SaaS-ready platform designed for tracking user subscription
 
 ## 🚀 Features
 
-### 🛡️ Security & Infrastructure
+###  Security & Infrastructure
 -   **Advanced WAF (Web Application Firewall)**: Protects against SQL Injection, XSS, and command injection attacks.
 -   **Bot Detection**: Identifies and blocks malicious crawlers and scrapers.
 -   **Rate Limiting**: Prevents DDoS and brute-force attacks.
 -   **IP Banning**: Automatically bans suspicious IP addresses.
 -   **Unified Activity Logging**: Centralized event stream for users, subscriptions, security, and workflows.
 
-### 📊 Admin Dashboard
+###  Admin Dashboard
 -   **Real-Time Analytics**: Live monitoring of total users, active subscriptions, and system load.
 -   **Security Intelligence**: Visualizations for attack frequency, top blocked IPs, and recent security events.
 -   **Interactive Charts**: Area, Bar, and Pie charts powered by Recharts.
 -   **Activity Feed**: Live feed of all system events (User signups, attacks blocked, emails sent).
 
-### 🔄 Subscription Management
+###  Subscription Management
 -   **CRUD Operations**: Full lifecycle management for user subscriptions.
 -   **Automated Reminders**: Intelligent email notifications sent 7, 5, 2, and 1 days before renewal.
 -   **Smart Scheduling**: Powered by **Upstash Workflow** for reliable, serverless task scheduling.
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Backend
 -   **Runtime**: Node.js, Express.js
@@ -48,7 +48,7 @@ Paywatch is a robust SaaS-ready platform designed for tracking user subscription
 
 ---
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 ### 1. Prerequisites
 -   Node.js (v18+)
