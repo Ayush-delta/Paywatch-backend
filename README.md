@@ -64,11 +64,12 @@ Paywatch is a robust SaaS-ready platform designed for tracking user subscription
 
 2.  **Install Backend Dependencies**
     ```bash
+    cd backend
     npm install
     ```
 
 3.  **Configure Environment Variables**
-    Create a `.env.development.local` file in the root directory:
+    Create a `.env.development.local` file in the `backend` directory:
     ```env
     # Server Configuration
     PORT=5500
@@ -132,32 +133,33 @@ This project follows a **Feature-Based Architecture**, ensuring scalability and 
 
 ```
 Paywatch/
-├── src/
-│   ├── auth/               # Authentication Feature
-│   │   ├── auth.controller.js
-│   │   ├── auth.routes.js
-│   │   ├── auth.service.js
-│   │   └── auth.schema.js
-│   ├── subscription/       # Subscription Feature
-│   │   ├── subscription.controller.js
-│   │   ├── subscription.routes.js
-│   │   └── subscription.model.js
-│   ├── security/           # Security Feature
-│   │   ├── security.middleware.js
-│   │   ├── waf.js
-│   │   └── rateLimiter.js
-│   ├── analytics/          # Analytics Feature
-│   │   └── analytics.controller.js
-│   ├── workflows/          # Automation Workflows
-│   │   └── reminder.workflow.js
-│   ├── shared/             # Shared Utilities
-│   │   ├── database/
-│   │   ├── utils/
-│   │   └── middleware/     # Global Middleware (Error handling, etc.)
+├── backend/                # Express Backend API
+│   ├── config/             # Config files (upstash, env, nodemailer)
+│   ├── controllers/        # Route logic and controllers
+│   ├── database/           # MongoDB connection
+│   ├── middlewares/        # Security & route middlewares
+│   ├── models/             # Mongoose schemas
+│   ├── routes/             # API routes
+│   ├── utils/              # Utility functions
 │   └── app.js              # Express Entry Point
-├── security-dashboard/     # React Admin Dashboard
-└── package.json            # Backend Dependencies
+├── security-dashboard/     # React Admin Dashboard (Vite)
+└── README.md               # Documentation
 ```
+
+---
+
+## ☁️ Deployment
+
+### Backend (Render / Railway / Heroku)
+1. Deploy the `backend` directory to your hosting provider.
+2. In your host's environment variables, copy everything from `.env.production.local` and add your database & Redis credentials.
+3. Don't forget to update your Upstash QStash webhook endpoints to point to your new live server URL.
+
+### Frontend (Vercel)
+1. Deploy the `security-dashboard` directory to Vercel.
+2. Under **Settings > Environment Variables**, add:
+   - `VITE_API_BASE`: Set this to your live backend API URL (e.g., `https://your-backend.onrender.com/api/v1`).
+3. Redeploy your Vercel app to apply the live variables!
 
 ---
 
