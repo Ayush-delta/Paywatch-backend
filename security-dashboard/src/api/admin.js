@@ -45,3 +45,31 @@ export const fetchActivity = async () => {
         return { success: false, data: [] };
     }
 };
+
+/**
+ * GET /api/v1/admin/subscriptions/stats
+ * Returns { active, cancelled, expired, totalRevenue, churnRate }
+ */
+export const fetchSubscriptionStats = async () => {
+    try {
+        const response = await api.get("/admin/subscriptions/stats");
+        return response.data;
+    } catch (error) {
+        console.error("Failed to fetch subscription stats:", error.message);
+        return { success: false, data: { active: 0, expired: 0, cancelled: 0, totalRevenue: 0, churnRate: 0 } };
+    }
+};
+
+/**
+ * GET /api/v1/admin/users/growth
+ * Returns time series array of signups
+ */
+export const fetchUserGrowth = async (range = "7d") => {
+    try {
+        const response = await api.get(`/admin/users/growth?range=${range}`);
+        return response.data;
+    } catch (error) {
+        console.error("Failed to fetch user growth:", error.message);
+        return { success: false, data: [] };
+    }
+};
