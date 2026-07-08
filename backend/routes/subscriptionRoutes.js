@@ -6,22 +6,30 @@ import {
     createSubscription,
     getUserSubscriptions,
 } from '../controllers/subscription.controller.js';
+import dbReady from '../middlewares/dbReady.js';
+import cacheMiddleware, { clearCacheMiddleware } from '../middlewares/cache.js';
 
 const subscriptionRouter = Router();
 
-subscriptionRouter.get('/', getAllSubscriptions);
+// Ensure DB is connected
+subscriptionRouter.use(dbReady);
+
+// Clear Cache on mutations
+const clearCacheOnMutation = clearCacheMiddleware(['/subscriptions', '/admin']);
+
+subscriptionRouter.get('/', cacheMiddleware(30), getAllSubscriptions);
+
+subscriptionRouter.get('/user/:id', authorize, cacheMiddleware(30), getUserSubscriptions);
+
+subscriptionRouter.post('/', authorize, clearCacheOnMutation, createSubscription);
+
+subscriptionRouter.put('/:id', clearCacheOnMutation, (req, res) => res.send({ title: 'UPDATE subscription' }));
+
+subscriptionRouter.delete('/:id', clearCacheOnMutation, (req, res) => res.send({ title: 'DELETE a subscription' }));
+
+subscriptionRouter.put('/:id/cancel', clearCacheOnMutation, (req, res) => res.send({ title: 'CANCEL subscription' }));
 
 subscriptionRouter.get('/:id', getSubscription);
-
-subscriptionRouter.post('/', authorize, createSubscription);
-
-subscriptionRouter.put('/:id', (req, res) => res.send({ title: 'UPDATE subscription' }));
-
-subscriptionRouter.delete('/:id', (req, res) => res.send({ title: 'DELETE a subscription' }));
-
-subscriptionRouter.get('/user/:id', authorize, getUserSubscriptions);
-
-subscriptionRouter.put('/:id/cancel', (req, res) => res.send({ title: 'CANCEL subscription' }));
 
 subscriptionRouter.get('/upcoming-renewals', (req, res) => res.send({ title: 'GET upcoming renewals' }));
 

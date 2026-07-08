@@ -11,4 +11,9 @@ const securityLogSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Security logs are listed sorted by recency, and aggregated by ip/path for
+// the "top attackers" widgets — index each access pattern explicitly.
+securityLogSchema.index({ createdAt: -1 });
+securityLogSchema.index({ ip: 1, createdAt: -1 });
+
 export default mongoose.model("SecurityLog", securityLogSchema);

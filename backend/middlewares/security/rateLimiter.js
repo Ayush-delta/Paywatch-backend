@@ -1,49 +1,40 @@
 import { RateLimiterRedis, RateLimiterMemory } from "rate-limiter-flexible";
 import redis from "./redisClient.js";
 
-function createLimiter(points, duration, prefix) {
-  if (redis.status === "ready") {
-    return new RateLimiterRedis({
-      storeClient: redis,
-      keyPrefix: prefix,
-      points,
-      duration,
-    });
-  }
+const redisLimiters = {
+  auth: new RateLimiterRedis({ storeClient: redis, keyPrefix: "rl_auth", points: 10, duration: 60 }),
+  users: new RateLimiterRedis({ storeClient: redis, keyPrefix: "rl_users", points: 40, duration: 60 }),
+  subscriptions: new RateLimiterRedis({ storeClient: redis, keyPrefix: "rl_subs", points: 30, duration: 60 }),
+  workflows: new RateLimiterRedis({ storeClient: redis, keyPrefix: "rl_workflows", points: 30, duration: 60 }),
+  general: new RateLimiterRedis({ storeClient: redis, keyPrefix: "rl_general", points: 50, duration: 60 }),
+};
 
-  // Fallback to memory if Redis is down/not configured
-  return new RateLimiterMemory({
-    points,
-    duration,
-  });
-}
-
-const limiters = {
-  auth: createLimiter(10, 60, "rl_auth"),
-  users: createLimiter(40, 60, "rl_users"),
-  subscriptions: createLimiter(30, 60, "rl_subs"),
-  workflows: createLimiter(30, 60, "rl_workflows"),
-  general: createLimiter(50, 60, "rl_general"),
+const memoryLimiters = {
+  auth: new RateLimiterMemory({ points: 10, duration: 60 }),
+  users: new RateLimiterMemory({ points: 40, duration: 60 }),
+  subscriptions: new RateLimiterMemory({ points: 30, duration: 60 }),
+  workflows: new RateLimiterMemory({ points: 30, duration: 60 }),
+  general: new RateLimiterMemory({ points: 50, duration: 60 }),
 };
 
 export default async function rateLimiter(ctx) {
   try {
-
     const identity = ctx.userId
       ? `user:${ctx.userId}`
       : `ip:${ctx.ip}`;
 
-    let limiter = limiters.general;
+    let limiterKey = "general";
 
     if (ctx.path.startsWith("/api/v1/auth"))
-      limiter = limiters.auth;
+      limiterKey = "auth";
     else if (ctx.path.startsWith("/api/v1/users"))
-      limiter = limiters.users;
+      limiterKey = "users";
     else if (ctx.path.startsWith("/api/v1/subscriptions"))
-      limiter = limiters.subscriptions;
+      limiterKey = "subscriptions";
     else if (ctx.path.startsWith("/api/v1/workflows"))
-      limiter = limiters.workflows;
+      limiterKey = "workflows";
 
+    const limiter = redis.status === "ready" ? redisLimiters[limiterKey] : memoryLimiters[limiterKey];
     await limiter.consume(identity);
 
     return { allowed: true };

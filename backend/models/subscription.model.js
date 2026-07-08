@@ -81,6 +81,12 @@ subscriptionSchema.pre('save', function () {
     }
 });
 
+// Dashboard filters by status and sorts/filters by renewalDate — compound
+// index keeps both the "active subscriptions" list and upcoming-renewal
+// queries index-covered instead of falling back to a collection scan.
+subscriptionSchema.index({ status: 1, renewalDate: 1 });
+subscriptionSchema.index({ createdAt: -1 });
+
 const Subscription = mongoose.model('Subscription', subscriptionSchema);
 
 export default Subscription;

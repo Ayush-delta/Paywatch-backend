@@ -3,21 +3,18 @@ import { fetchSubscriptions } from "../api";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/Card";
 import { Badge } from "../components/ui/Badge";
 import { StatsCard } from "../components/ui/StatsCard";
-import { Search, Filter, DollarSign, Repeat, XCircle, CheckCircle } from "lucide-react";
+import { Input } from "../components/ui/Input";
+import { Table, Td } from "../components/ui/Table";
+import { Search, DollarSign, Repeat, XCircle, CreditCard } from "lucide-react";
 import AreaChart from "../components/charts/AreaChart";
 
-// Status Colors Helper
 const statusColors = {
     active: "success",
     cancelled: "danger",
     expired: "warning",
 };
 
-const statusIcons = {
-    active: CheckCircle,
-    cancelled: XCircle,
-    expired: XCircle,
-};
+const FILTERS = ["all", "active", "cancelled", "expired"];
 
 export default function Subscriptions() {
     const [subs, setSubs] = useState([]);
@@ -43,12 +40,14 @@ export default function Subscriptions() {
         return matchSearch && matchFilter;
     });
 
-    // Calculate Stats
     const totalRevenue = subs.reduce((acc, curr) => acc + (curr.price || 0), 0);
     const activeSubs = subs.filter((s) => s.status === "active").length;
-    const churnRate = subs.length ? ((subs.filter(s => s.status === 'cancelled').length / subs.length) * 100).toFixed(1) : 0;
+    const churnRate = subs.length
+        ? ((subs.filter((s) => s.status === "cancelled").length / subs.length) * 100).toFixed(1)
+        : 0;
 
-    // Mock Graph Data based on real totals (distributing over months for visual)
+    // NOTE: distributes the current total across months for a placeholder trend line.
+    // Swap for GET /admin/subscriptions/revenue-trend (real time series) when available.
     const revenueData = [
         { name: "Jan", value: totalRevenue * 0.4 },
         { name: "Feb", value: totalRevenue * 0.5 },
@@ -67,13 +66,11 @@ export default function Subscriptions() {
                 <p className="text-gray-500">Monitor recurring revenue and customer retention.</p>
             </div>
 
-            {/* Stats Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <StatsCard
                     title="Total Monthly Revenue"
                     value={`$${totalRevenue.toLocaleString()}`}
                     icon={DollarSign}
-                    change="+12.5%"
                     trend="up"
                     color="emerald"
                 />
@@ -81,7 +78,6 @@ export default function Subscriptions() {
                     title="Active Subscriptions"
                     value={activeSubs}
                     icon={Repeat}
-                    change="+34"
                     trend="up"
                     color="indigo"
                 />
@@ -89,34 +85,31 @@ export default function Subscriptions() {
                     title="Churn Rate"
                     value={`${churnRate}%`}
                     icon={XCircle}
-                    change="-0.5%"
-                    trend="down"
+                    trend={churnRate > 0 ? "down" : "neutral"}
                     color="rose"
                 />
             </div>
 
-            {/* Revenue Chart */}
             <Card>
                 <CardHeader>
                     <CardTitle>Revenue Trends</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="h-[300px] w-full">
+                    <div className="h-[260px] sm:h-[300px] w-full">
                         <AreaChart data={revenueData} dataKey="value" name="Revenue" color="#10b981" />
                     </div>
                 </CardContent>
             </Card>
 
-            {/* Subscription List Table */}
             <Card>
-                <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div className="flex gap-2 p-1 bg-white rounded-lg">
-                        {["all", "active", "cancelled"].map((f) => (
+                <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+                    <div className="flex gap-1 p-1 bg-gray-100 rounded-lg overflow-x-auto">
+                        {FILTERS.map((f) => (
                             <button
                                 key={f}
                                 onClick={() => setFilter(f)}
-                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${filter === f
-                                        ? "bg-gray-100 text-gray-900 shadow-sm"
+                                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all whitespace-nowrap ${filter === f
+                                        ? "bg-white text-gray-900 shadow-sm"
                                         : "text-gray-500 hover:text-gray-800"
                                     }`}
                             >
@@ -125,62 +118,46 @@ export default function Subscriptions() {
                         ))}
                     </div>
 
-                    <div className="relative w-full sm:w-64">
-                        <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
-                        <input
-                            type="text"
-                            placeholder="Search subscriptions..."
-                            className="pl-9 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-emerald-500/50 outline-none w-full transition-all"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
+                    <Input
+                        icon={Search}
+                        type="text"
+                        placeholder="Search subscriptions..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        containerClassName="w-full sm:w-64"
+                        className="focus:ring-emerald-500/50 focus:border-emerald-500/50"
+                    />
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left">
-                        <thead className="bg-white text-gray-500 font-medium whitespace-nowrap">
-                            <tr>
-                                <th className="px-6 py-3">Subscription</th>
-                                <th className="px-6 py-3">Price</th>
-                                <th className="px-6 py-3">Frequency</th>
-                                <th className="px-6 py-3">Status</th>
-                                <th className="px-6 py-3">Renewal Date</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {filtered.length === 0 ? (
-                                <tr>
-                                    <td colSpan="5" className="p-8 text-center text-gray-400">
-                                        No subscriptions found matching your filters.
-                                    </td>
-                                </tr>
-                            ) : (
-                                filtered.map((sub) => (
-                                    <tr key={sub._id} className="hover:bg-gray-100 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-gray-800 capitalize">
-                                            {sub.name}
-                                        </td>
-                                        <td className="px-6 py-4 font-mono text-emerald-400">
-                                            {sub.currency} {sub.price.toFixed(2)}
-                                        </td>
-                                        <td className="px-6 py-4 capitalize text-gray-500">
-                                            {sub.frequency}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <Badge variant={statusColors[sub.status] || "default"}>
-                                                {sub.status}
-                                            </Badge>
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-500">
-                                            {new Date(sub.renewalDate).toLocaleDateString()}
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                <Table
+                    loading={loading}
+                    empty={!loading && filtered.length === 0}
+                    emptyIcon={CreditCard}
+                    emptyLabel="No subscriptions found matching your filters."
+                    columns={[
+                        { key: "sub", label: "Subscription" },
+                        { key: "price", label: "Price" },
+                        { key: "freq", label: "Frequency" },
+                        { key: "status", label: "Status" },
+                        { key: "renewal", label: "Renewal Date" },
+                    ]}
+                >
+                    {filtered.map((sub) => (
+                        <tr key={sub._id} className="hover:bg-gray-100 transition-colors">
+                            <Td className="font-medium text-gray-800 capitalize">{sub.name}</Td>
+                            <Td className="font-mono text-emerald-600 whitespace-nowrap">
+                                {sub.currency} {sub.price.toFixed(2)}
+                            </Td>
+                            <Td className="capitalize text-gray-500">{sub.frequency}</Td>
+                            <Td>
+                                <Badge variant={statusColors[sub.status] || "default"}>{sub.status}</Badge>
+                            </Td>
+                            <Td className="text-gray-500 whitespace-nowrap">
+                                {new Date(sub.renewalDate).toLocaleDateString()}
+                            </Td>
+                        </tr>
+                    ))}
+                </Table>
             </Card>
         </div>
     );

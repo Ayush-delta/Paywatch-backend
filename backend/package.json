@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "test-conn": "node test_connections.js"
   },
   "dependencies": {
     "@upstash/workflow": "^1.0.0",

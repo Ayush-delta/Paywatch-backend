@@ -3,16 +3,16 @@ import { fetchLogs as fetchSecurityLogs, fetchStats as fetchSecurityStats } from
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/Card";
 import { Badge } from "../components/ui/Badge";
 import { StatsCard } from "../components/ui/StatsCard";
-import { ShieldAlert, Lock, Globe, Server, AlertCircle } from "lucide-react";
+import { Table, Td } from "../components/ui/Table";
+import { ShieldAlert, Lock, Globe, Server, AlertCircle, ShieldOff } from "lucide-react";
 import AreaChart from "../components/charts/AreaChart";
 import BarChart from "../components/charts/BarChart";
 
-// Helper for log method coloring
 const methodColors = {
-    GET: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-    POST: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    DELETE: "bg-red-500/10 text-red-400 border-red-500/20",
-    PUT: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    GET: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+    POST: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+    DELETE: "bg-red-500/10 text-red-500 border-red-500/20",
+    PUT: "bg-amber-500/10 text-amber-500 border-amber-500/20",
 };
 
 export default function Security() {
@@ -36,78 +36,52 @@ export default function Security() {
         return () => clearInterval(interval);
     }, []);
 
-    // Prepare chart data
     const timeMap = {};
-    logs.forEach(log => {
-        const time = new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    logs.forEach((log) => {
+        const time = new Date(log.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
         timeMap[time] = (timeMap[time] || 0) + 1;
     });
 
     const timeData = Object.entries(timeMap)
-        .sort((a, b) => new Date('1970/01/01 ' + a[0]) - new Date('1970/01/01 ' + b[0]))
+        .sort((a, b) => new Date("1970/01/01 " + a[0]) - new Date("1970/01/01 " + b[0]))
         .map(([name, value]) => ({ name, value }));
 
-    const ipData = (stats.topIps || []).slice(0, 5).map(ip => ({
+    const ipData = (stats.topIps || []).slice(0, 5).map((ip) => ({
         name: ip._id,
-        value: ip.count
+        value: ip.count,
     }));
 
     return (
         <div className="space-y-6 fade-in">
-            {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                 <div>
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
                         Security Intelligence
                     </h1>
                     <p className="text-gray-500">Real-time threat monitoring and WAF analytics.</p>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-xs font-semibold animate-pulse">
-                    <div className="w-2 h-2 rounded-full bg-red-500" />
+                <div className="flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-500 text-xs font-semibold w-fit">
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                     LIVE MONITORING
                 </div>
             </div>
 
-            {/* Stats Row */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <StatsCard
-                    title="Threats Blocked"
-                    value={stats.total}
-                    icon={ShieldAlert}
-                    change="+24"
-                    trend="up"
-                    color="rose"
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatsCard title="Threats Blocked" value={stats.total} icon={ShieldAlert} trend="up" color="rose" />
                 <StatsCard
                     title="Active Bans"
                     value={stats.topIps?.length || 0}
                     icon={Lock}
-                    change="0"
                     trend="neutral"
                     color="amber"
                 />
-                <StatsCard
-                    title="Suspicious IPs"
-                    value={12}
-                    icon={Globe}
-                    change="-4"
-                    trend="down"
-                    color="indigo"
-                />
-                <StatsCard
-                    title="System Load"
-                    value="42%"
-                    icon={Server}
-                    change="+2%"
-                    trend="up"
-                    color="emerald"
-                />
+                <StatsCard title="Suspicious IPs" value={stats.topIps?.length || 0} icon={Globe} trend="neutral" color="indigo" />
+                <StatsCard title="Recent Events" value={logs.length} icon={Server} trend="neutral" color="emerald" />
             </div>
 
-            {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card>
-                    <CardHeader className="flex justify-between items-center">
+                    <CardHeader>
                         <CardTitle>Attack Frequency (Last Hour)</CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -125,7 +99,6 @@ export default function Security() {
                 </Card>
             </div>
 
-            {/* Recent Logs Table */}
             <Card className="border-red-500/10 shadow-red-500/5">
                 <CardHeader>
                     <div className="flex justify-between items-center">
@@ -136,50 +109,39 @@ export default function Security() {
                         <Badge variant="danger">{logs.length} events</Badge>
                     </div>
                 </CardHeader>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left">
-                        <thead className="bg-white text-gray-500 font-medium whitespace-nowrap">
-                            <tr>
-                                <th className="px-6 py-3">Timestamp</th>
-                                <th className="px-6 py-3">Source IP</th>
-                                <th className="px-6 py-3">Method</th>
-                                <th className="px-6 py-3">Path</th>
-                                <th className="px-6 py-3">Reason</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {logs.length === 0 ? (
-                                <tr>
-                                    <td colSpan="5" className="p-8 text-center text-gray-400">
-                                        No threats detected recently. System secure.
-                                    </td>
-                                </tr>
-                            ) : (
-                                logs.map((log) => (
-                                    <tr key={log._id} className="hover:bg-gray-100/30 transition-colors font-mono text-xs">
-                                        <td className="px-6 py-3 text-gray-500">
-                                            {new Date(log.createdAt).toLocaleTimeString()}
-                                        </td>
-                                        <td className="px-6 py-3 text-red-300">
-                                            {log.ip}
-                                        </td>
-                                        <td className="px-6 py-3">
-                                            <span className={`px-2 py-0.5 rounded border ${methodColors[log.method] || "bg-gray-100 text-gray-500 border-gray-300"}`}>
-                                                {log.method}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-3 text-gray-700 truncate max-w-[200px]">
-                                            {log.path}
-                                        </td>
-                                        <td className="px-6 py-3 text-red-400">
-                                            {log.reason}
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                <Table
+                    loading={loading}
+                    empty={!loading && logs.length === 0}
+                    emptyIcon={ShieldOff}
+                    emptyLabel="No threats detected recently."
+                    emptyHint="Your system is secure. Blocked requests will appear here in real time."
+                    columns={[
+                        { key: "time", label: "Timestamp" },
+                        { key: "ip", label: "Source IP" },
+                        { key: "method", label: "Method" },
+                        { key: "path", label: "Path" },
+                        { key: "reason", label: "Reason" },
+                    ]}
+                >
+                    {logs.map((log) => (
+                        <tr key={log._id} className="hover:bg-gray-100/60 transition-colors font-mono text-xs">
+                            <Td className="text-gray-500 whitespace-nowrap">
+                                {new Date(log.createdAt).toLocaleTimeString()}
+                            </Td>
+                            <Td className="text-red-500">{log.ip}</Td>
+                            <Td>
+                                <span
+                                    className={`px-2 py-0.5 rounded border ${methodColors[log.method] || "bg-gray-100 text-gray-500 border-gray-300"
+                                        }`}
+                                >
+                                    {log.method}
+                                </span>
+                            </Td>
+                            <Td className="text-gray-700 truncate max-w-[200px]">{log.path}</Td>
+                            <Td className="text-red-500">{log.reason}</Td>
+                        </tr>
+                    ))}
+                </Table>
             </Card>
         </div>
     );

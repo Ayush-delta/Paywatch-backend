@@ -2,12 +2,28 @@ import Subscription from '../models/subscription.model.js'
 import Activity from '../models/Activity.js'
 import { workflowClient } from '../config/upstash.js'
 import { SERVER_URL } from '../config/env.js'
+import { parsePagination, paginatedResponse } from '../utils/pagination.js'
 
 export const getAllSubscriptions = async (req, res, next) => {
   try {
-    const subscriptions = await Subscription.find().populate('user', 'name email');
+    const { page, limit, skip } = parsePagination(req.query);
+    const { status, search } = req.query;
 
-    res.status(200).json({ success: true, data: subscriptions });
+    const filter = {};
+    if (status && status !== 'all') filter.status = status;
+    if (search) filter.name = { $regex: search, $options: 'i' };
+
+    const [subscriptions, totalCount] = await Promise.all([
+      Subscription.find(filter)
+        .populate('user', 'name email')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Subscription.countDocuments(filter),
+    ]);
+
+    res.status(200).json(paginatedResponse({ data: subscriptions, page, limit, totalCount }));
   } catch (e) {
     next(e);
   }
