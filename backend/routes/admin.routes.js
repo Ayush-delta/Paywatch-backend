@@ -4,6 +4,7 @@ import Subscription from "../models/subscription.model.js";
 import SecurityLog from "../models/SecurityLog.js";
 import Activity from "../models/Activity.js";
 import { cacheOrFetch } from "../utils/cache.js";
+import { generateDayData, getDataBotStatus } from "../bot/dataBot.js";
 
 const adminRouter = Router();
 
@@ -137,6 +138,20 @@ adminRouter.get("/activity", async (req, res, next) => {
         });
 
         res.status(200).json({ success: true, data });
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Bot Status & Manual Trigger Routes
+adminRouter.get("/bot/status", (req, res) => {
+    res.status(200).json({ success: true, data: getDataBotStatus() });
+});
+
+adminRouter.post("/bot/pulse", async (req, res, next) => {
+    try {
+        const summary = await generateDayData(new Date());
+        res.status(200).json({ success: true, message: "DataBot pulse generated successfully.", data: summary });
     } catch (error) {
         next(error);
     }

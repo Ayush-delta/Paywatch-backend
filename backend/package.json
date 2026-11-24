@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test-conn": "node test_connections.js"
+    "test-conn": "node test_connections.js",
+    "seed": "node scripts/seed.js",
+    "simulate": "node scripts/simulate.js",
+    "bot": "node bot/dataBot.js"
   },
   "dependencies": {
     "@upstash/workflow": "^1.0.0",

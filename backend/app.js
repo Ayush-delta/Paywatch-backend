@@ -14,6 +14,7 @@ import authMiddleware from "./middlewares/auth.middleware.js";
 import workflowRouter from "./routes/workflow.routes.js";
 import requestTimer from "./middlewares/requestTimer.js";
 import adminRouter from "./routes/admin.routes.js";
+import { startDataBot } from "./bot/dataBot.js";
 
 const app = express();
 
@@ -40,6 +41,12 @@ app.get('/', (req, res) => {
 const startServer = async () => {
   try {
     await connectToDatabase();
+
+    // Start autonomous daily data bot unless explicitly disabled
+    if (process.env.ENABLE_DATA_BOT !== "false") {
+      startDataBot();
+    }
+
     app.listen(PORT || 3000, () => {
       console.log(`Paywatch API is running on http://localhost:${PORT || 3000}`);
     });
